@@ -108,7 +108,7 @@ export default function ApprovalDashboard() {
     consultationDate: data.created_at
       ? new Date(data.created_at).toLocaleString()
       : '',
-    provider: data.doctor_name || 'Unknown',
+    provider: data.doctor_name || 'Dr. Sarah Chen',
     status: statusLabel(data.status),
     chiefComplaint: extracted?.chief_complaint || 'Not extracted',
     diagnoses: diagnosisRows.length

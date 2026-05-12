@@ -70,7 +70,7 @@ def _parse_dosage(dosage_str: str) -> tuple[float | None, str | None]:
 
 def build_patient(
     patient_id: str,
-    name: str = "Unknown Patient",
+    name: str = "Patient",
     age: int | None = None,
     gender: str | None = None,
 ) -> dict:

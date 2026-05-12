@@ -146,7 +146,6 @@ export default function ApprovalPanel({ data, onApprove, onReject, onSendBack }:
             Reject
           </button>
         </div>
-Send Back for Revision
       </div>
     </div>
   );
