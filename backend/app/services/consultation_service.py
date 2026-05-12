@@ -15,7 +15,7 @@ from app.agents.transcription.agent import transcription_agent
 
 logger = structlog.get_logger(__name__)
 
-USE_KAFKA = os.getenv("USE_KAFKA", "true").lower() == "true"
+USE_KAFKA = os.getenv("USE_KAFKA", "false").lower() == "true"
 
 SUPPORTED_AUDIO_TYPES = {
     "audio/wav", "audio/wave", "audio/mpeg", "audio/mp3",

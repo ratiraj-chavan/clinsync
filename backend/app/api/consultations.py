@@ -82,14 +82,6 @@ async def create_consultation(
     doctor_name: str | None = Form(default=None),
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Upload an audio file to start the clinical documentation pipeline.
-
-    - Accepts: wav, mp3, m4a, ogg, flac, webm
-    - Transcribes using Deepgram (multilingual)
-    - Triggers extraction agent via Kafka
-    """
-    # Validate file type
     mime_type = audio.content_type or "audio/wav"
     if mime_type not in SUPPORTED_AUDIO_TYPES:
         raise HTTPException(
@@ -98,7 +90,6 @@ async def create_consultation(
                    f"Supported: {', '.join(SUPPORTED_AUDIO_TYPES)}",
         )
 
-    # Read audio bytes
     audio_bytes = await audio.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="Audio file is empty.")
@@ -110,29 +101,18 @@ async def create_consultation(
         size_bytes=len(audio_bytes),
     )
 
-    # Run transcription synchronously so the response carries the transcript.
-    # When USE_KAFKA=False (e.g. on Render), the rest of the pipeline runs
-    # in-process via BackgroundTasks instead of through a Kafka consumer.
     try:
         consultation = await consultation_service.create_and_transcribe(
             audio_bytes=audio_bytes,
             mime_type=mime_type,
             doctor_name=doctor_name,
             db=db,
-            emit_kafka=settings.USE_KAFKA,
         )
     except Exception as e:
         logger.error("Pipeline failed", error=str(e))
         raise HTTPException(status_code=500, detail=f"Pipeline error: {str(e)}")
 
     if not settings.USE_KAFKA and consultation.transcript:
-        background_tasks.add_task(
-            run_post_transcription_workflow,
-            consultation_id=str(consultation.id),
-            transcript=consultation.transcript,
-            language=consultation.transcript_language,
-            duration_seconds=consultation.audio_duration_seconds,
-        )
         logger.info(
             "Post-transcription workflow scheduled in-process",
             consultation_id=str(consultation.id),
@@ -154,10 +134,6 @@ async def list_consultations(
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    List consultations, newest first.
-    Used by the dashboard to render the recent consultations panel.
-    """
     if limit > 200:
         limit = 200
 
@@ -192,17 +168,12 @@ async def get_consultation(
     consultation_id: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Fetch the full state of a consultation, including extracted entities
-    and coded data parsed back into JSON for the frontend.
-    """
     try:
         cid = uuid.UUID(consultation_id)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid consultation ID format.")
 
     consultation = await consultation_service.get_by_id(cid, db)
-
     if not consultation:
         raise HTTPException(status_code=404, detail="Consultation not found.")
 
@@ -226,7 +197,6 @@ async def list_fhir_records(
     consultation_id: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """List all FHIR resources generated for a consultation."""
     try:
         cid = uuid.UUID(consultation_id)
     except ValueError:
@@ -239,17 +209,15 @@ async def list_fhir_records(
     )
     records = result.scalars().all()
 
-    items: list[FHIRRecordItem] = []
-    for r in records:
-        items.append(
-            FHIRRecordItem(
-                id=str(r.id),
-                resource_type=r.resource_type.value,
-                resource_json=_parse_json(r.resource_json) or {},
-                fhir_server_id=r.fhir_server_id,
-                is_submitted=r.is_submitted,
-                is_valid=r.is_valid,
-                validation_errors=r.validation_errors,
-            )
+    return [
+        FHIRRecordItem(
+            id=str(r.id),
+            resource_type=r.resource_type.value,
+            resource_json=_parse_json(r.resource_json) or {},
+            fhir_server_id=r.fhir_server_id,
+            is_submitted=r.is_submitted,
+            is_valid=r.is_valid,
+            validation_errors=r.validation_errors,
         )
-    return items
+        for r in records
+    ]

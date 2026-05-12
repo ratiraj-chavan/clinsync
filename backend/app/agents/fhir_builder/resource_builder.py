@@ -78,13 +78,19 @@ def build_patient(
     resource = {
         "resourceType": "Patient",
         "id": patient_id,
-        "meta": {"profile": ["http://hl7.org/fhir/StructureDefinition/Patient"]},
-        "text": {
-            "status": "generated",
-            "div": f'<div xmlns="http://www.w3.org/1999/xhtml">{name}</div>',
-        },
-        "name": [{"use": "official", "text": name}],
-    }
+        "identifier": [
+            {
+                "system": "https://clinsync.io/patient",
+                "value": patient_id,
+            }
+    ],
+    "meta": {"profile": ["http://hl7.org/fhir/StructureDefinition/Patient"]},
+    "text": {
+        "status": "generated",
+        "div": f'<div xmlns="http://www.w3.org/1999/xhtml">{name}</div>',
+    },
+    "name": [{"use": "official", "text": name}],
+}
 
     if gender:
         gender_map = {"male": "male", "female": "female", "other": "other"}

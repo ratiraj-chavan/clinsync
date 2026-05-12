@@ -20,17 +20,18 @@ class Settings(BaseSettings):
     DEEPGRAM_API_KEY: str = ""
 
     # Kafka
-    KAFKA_BOOTSTRAP_SERVERS: str = "kafka:9092"
-    KAFKA_TOPIC_TRANSCRIPTION: str = "clinsync.transcription"
-    KAFKA_TOPIC_EXTRACTION: str = "clinsync.extraction"
-    KAFKA_TOPIC_FHIR: str = "clinsync.fhir"
-    KAFKA_TOPIC_APPROVAL: str = "clinsync.approval"
+    USE_KAFKA: bool = False
 
     # FHIR
     HAPI_FHIR_URL: str = "http://hapi-fhir:8080/fhir"
 
     # CORS
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    CORS_ORIGINS: List[str] = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
     # LangSmith
     LANGCHAIN_TRACING_V2: bool = False

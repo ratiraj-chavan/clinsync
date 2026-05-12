@@ -19,7 +19,7 @@ from app.core.database import create_all_tables
 logger = structlog.get_logger(__name__)
 
 _consumer_task: asyncio.Task | None = None
-USE_KAFKA = os.getenv("USE_KAFKA", "true").lower() == "true"
+USE_KAFKA = settings.USE_KAFKA
 
 
 @asynccontextmanager
