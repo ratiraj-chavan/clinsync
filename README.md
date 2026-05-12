@@ -107,4 +107,4 @@ clinsync/
 - **Database**: PostgreSQL / NeonDB
 - **Frontend**: React · TypeScript · Vite · Tailwind CSS
 - **Infra**: Docker · Kubernetes
-- **Compliance**: DPDP Act 2023 · ISO 42001
+- **Compliance**: DPDP Act 2023 · ISO 42001# clinsync
