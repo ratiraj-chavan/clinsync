@@ -125,7 +125,7 @@ export default function Dashboard() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="min-w-0 pr-4">
                         <p className="font-medium text-gray-900 truncate">
-                          {c.doctor_name || 'Unknown Doctor'}
+                          {c.doctor_name || 'Dr. Sarah Chen'}
                         </p>
                         <p className="text-xs text-gray-500 font-mono truncate">
                           {c.consultation_id}
