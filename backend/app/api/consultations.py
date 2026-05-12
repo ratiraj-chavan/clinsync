@@ -74,7 +74,6 @@ def _parse_json(raw: str | None) -> dict | None:
     except (ValueError, TypeError):
         return None
 
-
 @router.post("/", response_model=ConsultationResponse)
 async def create_consultation(
     background_tasks: BackgroundTasks,
@@ -82,12 +81,13 @@ async def create_consultation(
     doctor_name: str | None = Form(default=None),
     db: AsyncSession = Depends(get_db),
 ):
-if not any(mime_type.startswith(t) for t in SUPPORTED_AUDIO_TYPES):
-    raise HTTPException(
-        status_code=400,
-        detail=f"Unsupported audio type: {mime_type}. "
-               f"Supported: {', '.join(SUPPORTED_AUDIO_TYPES)}",
-    )
+    mime_type = audio.content_type or "audio/wav"
+    if not any(mime_type.startswith(t) for t in SUPPORTED_AUDIO_TYPES):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported audio type: {mime_type}. "
+                   f"Supported: {', '.join(SUPPORTED_AUDIO_TYPES)}",
+        )
 
     audio_bytes = await audio.read()
     if not audio_bytes:
@@ -111,11 +111,10 @@ if not any(mime_type.startswith(t) for t in SUPPORTED_AUDIO_TYPES):
         logger.error("Pipeline failed", error=str(e))
         raise HTTPException(status_code=500, detail=f"Pipeline error: {str(e)}")
 
-    if not settings.USE_KAFKA and consultation.transcript:
-        logger.info(
-            "Post-transcription workflow scheduled in-process",
-            consultation_id=str(consultation.id),
-        )
+    logger.info(
+        "Post-transcription workflow complete",
+        consultation_id=str(consultation.id),
+    )
 
     return ConsultationResponse(
         consultation_id=str(consultation.id),
@@ -125,7 +124,6 @@ if not any(mime_type.startswith(t) for t in SUPPORTED_AUDIO_TYPES):
         language=consultation.transcript_language,
         duration_seconds=consultation.audio_duration_seconds,
     )
-
 
 @router.get("/", response_model=list[ConsultationListItem])
 async def list_consultations(
