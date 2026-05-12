@@ -7,10 +7,6 @@ export default function Sidebar() {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: Activity, label: 'Live Consultation', path: '/live-consultation' },
-    { icon: FileText, label: 'Transcript Review', path: '/transcript-review' },
-    { icon: Stethoscope, label: 'Clinical Entities', path: '/clinical-entities' },
-    { icon: Code, label: 'Medical Coding', path: '/medical-coding' },
-    { icon: Database, label: 'FHIR Viewer', path: '/fhir-viewer' },
     { icon: CheckSquare, label: 'Approval Dashboard', path: '/approval-dashboard' },
   ];
 
