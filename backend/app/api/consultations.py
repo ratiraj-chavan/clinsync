@@ -82,13 +82,12 @@ async def create_consultation(
     doctor_name: str | None = Form(default=None),
     db: AsyncSession = Depends(get_db),
 ):
-    mime_type = audio.content_type or "audio/wav"
-    if mime_type not in SUPPORTED_AUDIO_TYPES:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported audio type: {mime_type}. "
-                   f"Supported: {', '.join(SUPPORTED_AUDIO_TYPES)}",
-        )
+if not any(mime_type.startswith(t) for t in SUPPORTED_AUDIO_TYPES):
+    raise HTTPException(
+        status_code=400,
+        detail=f"Unsupported audio type: {mime_type}. "
+               f"Supported: {', '.join(SUPPORTED_AUDIO_TYPES)}",
+    )
 
     audio_bytes = await audio.read()
     if not audio_bytes:
