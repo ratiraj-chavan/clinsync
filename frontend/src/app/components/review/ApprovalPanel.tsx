@@ -146,13 +146,7 @@ export default function ApprovalPanel({ data, onApprove, onReject, onSendBack }:
             Reject
           </button>
         </div>
-        <button
-          onClick={onSendBack}
-          className="w-full py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 font-medium"
-        >
-          <ArrowLeft size={20} />
-          Send Back for Revision
-        </button>
+Send Back for Revision
       </div>
     </div>
   );

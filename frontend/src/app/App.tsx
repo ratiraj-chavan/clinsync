@@ -3,6 +3,7 @@ import { Toaster } from 'sonner';
 import Sidebar from './components/layout/Sidebar';
 import Navbar from './components/layout/Navbar';
 import Dashboard from './pages/Dashboard';
+import LiveConsultation from './pages/LiveConsultation';
 import TranscriptReview from './pages/TranscriptReview';
 import ClinicalEntities from './pages/ClinicalEntities';
 import MedicalCoding from './pages/MedicalCoding';
@@ -19,6 +20,7 @@ export default function App() {
           <main className="flex-1 overflow-y-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/live-consultation" element={<LiveConsultation />} />
               <Route path="/transcript-review" element={<TranscriptReview />} />
               <Route path="/transcript-review/:id" element={<TranscriptReview />} />
               <Route path="/clinical-entities" element={<ClinicalEntities />} />

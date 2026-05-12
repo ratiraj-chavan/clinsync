@@ -7,7 +7,6 @@ export default function Sidebar() {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: Activity, label: 'Live Consultation', path: '/live-consultation' },
-    { icon: CheckSquare, label: 'Approval Dashboard', path: '/approval-dashboard' },
   ];
 
   return (
